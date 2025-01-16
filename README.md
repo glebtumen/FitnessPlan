@@ -13,8 +13,3 @@ Then run the bot using `docker compose`
 ```commandline
 docker compose up --build
 ```
-### Development
-Consider using `docker compose` to run the bot and/or services locally. You can use the `docker-compose.dev.yml` file in the root of the project.
-```commandline
-docker compose up --build
-```
