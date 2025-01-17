@@ -37,6 +37,7 @@ class FitnessForm(StatesGroup):
     waiting_for_weight = State()
     waiting_for_height = State()
     waiting_for_activity = State()
+    waiting_for_exclusions = State()
     waiting_for_goal = State()
 
 # Keyboards
@@ -54,6 +55,13 @@ activity_kb = ReplyKeyboardMarkup(
         [KeyboardButton(text="1.55 - Умеренный (3-4 тренировки в неделю)")],
         [KeyboardButton(text="1.7 - Высокий (5-7 тренировок в неделю)")],
         [KeyboardButton(text="1.9 - Экстремальный (интенсивные тренировки)")],
+    ],
+    resize_keyboard=True
+)
+
+exclusions_kb = ReplyKeyboardMarkup(
+    keyboard=[
+        [KeyboardButton(text="Нет исключений")]
     ],
     resize_keyboard=True
 )
@@ -117,7 +125,7 @@ async def calculate_calories(data: Dict) -> float:
     
     return round(final_calories)
 
-async def get_meal_plan(calories: int) -> str:
+async def get_meal_plan(calories: int, exclusions_text: str = "") -> str:
     try:
         response = await client.chat.completions.create(
             model="gpt-4o-mini",
@@ -185,7 +193,7 @@ async def get_meal_plan(calories: int) -> str:
                     
                     Ужин (К: X, Б: X, Ж: X, У: X)
                     
-                    И так далее для каждого дня недели. Уложись в 400 слов. Отправляй без markdown"""
+                    И так далее для каждого дня недели. Уложись в 400 слов. НЕ используй продукты из этого списка: {exclusions_text}. Отправляй без markdown"""
                 }
             ],
             temperature=0.7,
@@ -259,6 +267,17 @@ async def process_activity(message: types.Message, state: FSMContext):
     
     await state.update_data(activity=message.text)
     await message.reply(
+        "Укажите продукты, которые следует исключить из плана питания (например: молочные продукты, орехи, морепродукты).\n"
+        "Если нет исключений, нажмите соответствующую кнопку:",
+        reply_markup=exclusions_kb
+    )
+    await state.set_state(FitnessForm.waiting_for_exclusions)
+
+@dp.message(FitnessForm.waiting_for_exclusions)
+async def process_exclusions(message: types.Message, state: FSMContext):
+    exclusions = "Нет исключений" if message.text == "Нет исключений" else message.text
+    await state.update_data(exclusions=exclusions)
+    await message.reply(
         "Какова ваша цель?",
         reply_markup=goal_kb
     )
@@ -276,8 +295,11 @@ async def process_goal(message: types.Message, state: FSMContext):
     # Calculate calories
     calories = await calculate_calories(user_data)
     
-    # Get meal plan
-    meal_plan = await get_meal_plan(calories)
+    # Add exclusions to the meal plan prompt
+    exclusions_text = "" if user_data['exclusions'] == "Нет исключений" else f"\n\nПожалуйста, исключи следующие продукты из плана: {user_data['exclusions']}"
+    
+    # Get meal plan with exclusions
+    meal_plan = await get_meal_plan(calories, exclusions_text)
     
     # Save to Supabase
     success = await save_user_data(message.from_user.id, user_data, calories)
@@ -293,6 +315,7 @@ async def process_goal(message: types.Message, state: FSMContext):
         f"• Вес: {user_data['weight']} кг\n"
         f"• Рост: {user_data['height']} см\n"
         f"• Уровень активности: {user_data['activity']}\n"
+        f"• Исключения: {user_data['exclusions']}\n"
         f"• Цель: {user_data['goal']}\n\n"
         f"Ваша дневная норма калорий: {calories} ккал\n\n"
         f"Вот ваш недельный план питания:\n\n{meal_plan}",
