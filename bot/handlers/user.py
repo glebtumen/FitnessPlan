@@ -8,6 +8,7 @@ from bot.keyboards.reply import gender_kb, activity_kb, exclusions_kb, goal_kb
 from bot.services.calculator import calculate_calories
 from bot.services.meal_planning import get_meal_plan
 from bot.database.supabase import save_user_data
+import asyncio
 
 router = Router()
 
@@ -90,6 +91,26 @@ async def process_exclusions(message: Message, state: FSMContext):
     )
     await state.set_state(FitnessForm.waiting_for_goal)
 
+def split_text(text: str, chunk_size: int = 2000) -> list:
+    chunks = []
+    while text:
+        if len(text) <= chunk_size:
+            chunks.append(text)
+            break
+        
+        # Ищем последний перенос строки или пробел в пределах chunk_size
+        split_pos = text.rfind('\n', 0, chunk_size)
+        if split_pos == -1:
+            split_pos = text.rfind(' ', 0, chunk_size)
+        
+        # Если не найдено подходящее место - принудительно обрезаем
+        split_pos = chunk_size if split_pos == -1 else split_pos
+        
+        chunks.append(text[:split_pos].strip())
+        text = text[split_pos:].strip()
+    
+    return chunks
+
 @router.message(FitnessForm.waiting_for_goal)
 async def process_goal(message: Message, state: FSMContext):
     if message.text not in ["Похудеть", "Поддержание веса", "Набрать вес"]:
@@ -119,10 +140,29 @@ async def process_goal(message: Message, state: FSMContext):
         f"• Исключения: {user_data['exclusions']}\n"
         f"• Цель: {user_data['goal']}\n\n"
         f"Ваша дневная норма калорий: {calories} ккал\n\n"
-        f"Вот ваш недельный план питания:\n\n{meal_plan}",
-        reply_markup=ReplyKeyboardMarkup(
-            keyboard=[[KeyboardButton(text="/start")]],
-            resize_keyboard=True
-        )
     )
+
+    # Отправка разделенного плана
+    chunks = split_text(meal_plan, chunk_size=2000)
+    
+    for i, chunk in enumerate(chunks):
+        reply_text = (
+            f"🍏 Часть {i+1} плана питания:\n\n{chunk}"
+            if len(chunks) > 1 else 
+            f"🍏 План питания:\n\n{chunk}"
+        )
+        
+        markup = (
+            ReplyKeyboardMarkup(
+                keyboard=[[KeyboardButton(text="/start")]],
+                resize_keyboard=True
+            ) if i == len(chunks)-1 else 
+            ReplyKeyboardRemove()
+        )
+        
+        await message.answer(reply_text, reply_markup=markup)
+        await asyncio.sleep(0.5)  # Задержка между сообщениями
+
+    await state.clear()
+
     await state.clear()
