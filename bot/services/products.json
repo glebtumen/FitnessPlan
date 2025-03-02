@@ -36,7 +36,7 @@
             "calories_per_100g": 245
         },
         {
-            "name": "хлеб для тостов",
+            "name": "Хлеб для тостов",
             "protein_per_100g": 8,
             "fat_per_100g": 2.5,
             "carbs_per_100g": 52,
@@ -58,10 +58,10 @@
         },
         {
             "name": "Яйцо С1",
-            "protein_per_100g": 12.7,
-            "fat_per_100g": 9.5,
+            "protein_per_100g": 8.4,
+            "fat_per_100g": 6.6,
             "carbs_per_100g": 0,
-            "calories_per_100g": 143
+            "calories_per_100g": 90
         },
         {
             "name": "Филе бедра без кости / без кожи",
@@ -99,7 +99,7 @@
             "calories_per_100g": 116
         },
         {
-            "name": "Коктейль из морепродуктов в собственном соку",
+            "name": "Коктейль из морепродуктов в собственом соку",
             "protein_per_100g": 16,
             "fat_per_100g": 2.5,
             "carbs_per_100g": 0,
@@ -141,7 +141,14 @@
             "calories_per_100g": 190
         },
         {
-            "name": "Сыр полутвердый",
+            "name": "Ветчина из индейки",
+            "protein_per_100g": 11,
+            "fat_per_100g": 5,
+            "carbs_per_100g": 3,
+            "calories_per_100g": 90
+        },
+        {
+            "name": "Сыр полутвердный",
             "protein_per_100g": 25.2,
             "fat_per_100g": 25.6,
             "carbs_per_100g": 0,
@@ -149,13 +156,13 @@
         },
         {
             "name": "Ряженка",
-            "protein_per_100g": 2.8,
-            "fat_per_100g": 2.9,
-            "carbs_per_100g": 10,
-            "calories_per_100g": 78
+            "protein_per_100g": 3,
+            "fat_per_100g": 4,
+            "carbs_per_100g": 3.5,
+            "calories_per_100g": 66
         },
         {
-            "name": "молоко",
+            "name": "Молоко",
             "protein_per_100g": 3,
             "fat_per_100g": 0.9,
             "carbs_per_100g": 4.7,
@@ -177,16 +184,16 @@
         },
         {
             "name": "Творог 9%",
-            "protein_per_100g": 20,
+            "protein_per_100g": 16,
             "fat_per_100g": 9,
             "carbs_per_100g": 1.5,
             "calories_per_100g": 147
         },
         {
             "name": "Творог 5%",
-            "protein_per_100g": 15,
+            "protein_per_100g": 16,
             "fat_per_100g": 5,
-            "carbs_per_100g": 1.5,
+            "carbs_per_100g": 2.8,
             "calories_per_100g": 104
         },
         {
@@ -218,18 +225,32 @@
             "calories_per_100g": 254
         },
         {
-            "name": "Орехи",
+            "name": "Орехи (миндаль)",
+            "protein_per_100g": 18.6,
+            "fat_per_100g": 53.7,
+            "carbs_per_100g": 13,
+            "calories_per_100g": 609
+        },
+        {
+            "name": "Свежие овощи",
+            "protein_per_100g": 0.7,
+            "fat_per_100g": 0.1,
+            "carbs_per_100g": 4.2,
+            "calories_per_100g": 35
+        },
+        {
+            "name": "Орехи (кешью)",
             "protein_per_100g": 17.5,
             "fat_per_100g": 42.2,
             "carbs_per_100g": 30.5,
             "calories_per_100g": 572
         },
         {
-            "name": "Свежие овощи",
-            "protein_per_100g": 3.2,
-            "fat_per_100g": 1,
-            "carbs_per_100g": 25,
-            "calories_per_100g": 25
+            "name": "Орехи (арахис)",
+            "protein_per_100g": 28,
+            "fat_per_100g": 52.5,
+            "carbs_per_100g": 15.3,
+            "calories_per_100g": 599
         },
         {
             "name": "Зефир",
