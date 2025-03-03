@@ -23,7 +23,7 @@ products_str = json.dumps(products_json, ensure_ascii=False)
 async def get_meal_plan(calories: int, exclusions_text: str = "") -> str:
     client = AsyncOpenAI(
         base_url="https://openrouter.ai/api/v1",
-        api_key="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",
+        api_key=os.getenv("OPENAI_API_KEY"),
     )
     try:
         completion = await client.chat.completions.create(
