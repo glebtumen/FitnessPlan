@@ -19,7 +19,8 @@ router = Router()
 
 
 @router.message(Command("start"))
-async def cmd_start(message: Message):
+async def cmd_start(message: Message, state: FSMContext):
+    await state.clear()
     start_kb = ReplyKeyboardMarkup(
         keyboard=[
             [KeyboardButton(text="Получить план питания")],
